@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/F117nighthawkX/kube-pulse/internal/kube"
+)
 
 func main() {
-	fmt.Println("Resource health CLI")
+	fmt.Println("kube-pulse: Kubernetes Resource Health CLI")
+
+	kube.CreateNewClient()
 }
