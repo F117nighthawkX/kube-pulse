@@ -11,12 +11,16 @@ import (
 
 const DefaultNamespace = "default"
 
-func ListPods(ctx context.Context, client kubernetes.Interface) ([]corev1.Pod, error) {
-	podList, err := client.CoreV1().Pods(DefaultNamespace).List(ctx, metav1.ListOptions{})
+func ListPods(ctx context.Context, client kubernetes.Interface, namespace string) ([]corev1.Pod, error) {
+	if namespace == "" {
+		namespace = DefaultNamespace
+	}
+
+	podList, err := client.CoreV1().Pods(namespace).List(ctx, metav1.ListOptions{})
 	if err != nil {
 		return nil, fmt.Errorf("error listing pods: %v", err)
 	}
 
-	fmt.Printf("Listing pods in namespace: %s\n", DefaultNamespace)
+	fmt.Printf("Listing pods in namespace: %s\n", namespace)
 	return podList.Items, nil
 }
