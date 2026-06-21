@@ -1,0 +1,30 @@
+# Using an invalid image to simulate a broken deployment with ImagePullBackOff status
+# Info about Kubernetes errors: https://4sysops.com/archives/kubernetes-troubleshooting-imagepullbackoff-crashloopbackoff-createcontainerconfigerror-and-kubernetes-service-connection-failed/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: broken-image-deployment
+  labels:
+    app: broken-image
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: broken-image
+  template:
+    metadata:
+      labels:
+        app: broken-image
+    spec:
+      containers:
+      - name: broken-image
+        image: power:9000
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "250m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"

@@ -1,0 +1,22 @@
+# Incomplete deployment to simulate missing resources
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: missing-resources-deployment
+  labels:
+    app: missing-resources
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: missing-resources
+  template:
+    metadata:
+      labels:
+        app: missing-resources
+    spec:
+      containers:
+      - name: missing-resources
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80

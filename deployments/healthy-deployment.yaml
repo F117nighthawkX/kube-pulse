@@ -1,4 +1,5 @@
 # Default deployment from https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment
+# Adding resource limits and requests: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#example-1
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -16,7 +17,14 @@ spec:
         app: healthy-nginx
     spec:
       containers:
-      - name: nginx
+      - name: healthy-nginx
         image: nginx:1.14.2
         ports:
         - containerPort: 80
+        resources:
+          limits:
+            cpu: "250m"
+            memory: "128Mi"
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
