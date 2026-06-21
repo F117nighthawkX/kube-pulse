@@ -72,3 +72,13 @@ Pod: nginx-demo-5fd9fc6576-cmxv8, Status: Running
 Pod: nginx-demo-5fd9fc6576-mpswb, Status: Running
 Pod: nginx-demo-5fd9fc6576-rrwvp, Status: Running
 ```
+
+## Cleanup
+
+```powershell
+kubectl delete deployment nginx-demo
+kind delete cluster --name kube-pulse-demo
+```
+
+Note: running the `kind delete cluster` command may be enough, according to [kubernetes garbage collection docs](https://kubernetes.io/docs/concepts/architecture/garbage-collection/)
+- Leaving for now, more research required
