@@ -30,9 +30,9 @@ Expected output:
 kube-pulse-demo
 ```
 
-Populate `default` namespace with a simple deployment for testing:
+Populate `default` namespace with deployments from `.\deployments\` (run from project root):
 ```powershell
-kubectl create deployment nginx-demo --image=nginx --replicas=3
+kubectl apply -f .\examples\
 ```
 
 Then verify the pods are running with:
@@ -42,10 +42,10 @@ kubectl get pods
 
 Expected output:
 ```
-NAME                          READY   STATUS    RESTARTS   AGE
-nginx-demo-5fd9fc6576-cmxv8   1/1     Running   0          15s       
-nginx-demo-5fd9fc6576-mpswb   1/1     Running   0          15s
-nginx-demo-5fd9fc6576-rrwvp   1/1     Running   0          15s
+NAME                                        READY   STATUS             RESTARTS   AGE
+broken-nginx-deployment-844c4bb7f5-j2qgn    0/1     ImagePullBackOff   0          15m
+healthy-nginx-deployment-796d6c889c-gm7mh   1/1     Running            0          15m
+healthy-nginx-deployment-796d6c889c-kcmnf   1/1     Running            0          15m
 ```
 
 ## Run the Project
@@ -68,15 +68,33 @@ Expected output for Pods (using `default` as namespace for testing):
 ```
 Listing pods in namespace: default
 Found 3 pods
-Pod: nginx-demo-5fd9fc6576-cmxv8, Status: Running
-Pod: nginx-demo-5fd9fc6576-mpswb, Status: Running
-Pod: nginx-demo-5fd9fc6576-rrwvp, Status: Running
+Pod: broken-nginx-deployment-844c4bb7f5-j2qgn, Status: Pending
+Pod: healthy-nginx-deployment-796d6c889c-gm7mh, Status: Running
+Pod: healthy-nginx-deployment-796d6c889c-kcmnf, Status: Running
+```
+
+## Status Checking
+
+To see detailed information on a pod:
+```powershell
+kubectl describe pod <pod-name>
+kubectl logs <pod-name>
+```
+
+Watch the pods update live (seems to work the same as `htop` for Linux resources):
+```powershell
+kubectl get pods --watch
 ```
 
 ## Cleanup
 
+Delete demo deployments:
 ```powershell
-kubectl delete deployment nginx-demo
+kubectl delete -f .\deployments\
+```
+
+Delete kind cluster:
+```powershell
 kind delete cluster --name kube-pulse-demo
 ```
 
