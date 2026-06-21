@@ -3,8 +3,10 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/F117nighthawkX/kube-pulse/internal/kube"
+	"github.com/F117nighthawkX/kube-pulse/internal/kube/health"
 )
 
 func main() {
@@ -14,24 +16,22 @@ func main() {
 
 	client, err := kube.CreateNewClient()
 	if err != nil {
-		fmt.Printf("Error creating Kubernetes client: %v\n", err)
+		log.Fatalf("Error creating Kubernetes client: %v\n", err)
 	}
 
 	pods, err := kube.ListPods(ctx, client, "default")
 	if err != nil {
-		fmt.Printf("Error listing pods: %v\n", err)
+		log.Fatalf("Error listing pods: %v\n", err)
 	} else {
 		fmt.Printf("Found %d pods\n", len(pods))
 	}
 
-	for _, pod := range pods {
-		fmt.Printf("Pod: %s, Status: %s\n", pod.Name, pod.Status.Phase)
-	}
+	// for _, pod := range pods {
+	// 	fmt.Printf("Pod: %s, Status: %s\n", pod.Name, pod.Status.Phase)
+	// }
 
-	version, err := client.Discovery().ServerVersion()
-	if err != nil {
-		fmt.Printf("Error getting Kubernetes server version: %v\n", err)
-	} else {
-		fmt.Printf("Connected to Kubernetes server version: %s\n", version.String())
+	healthStatuses := health.AnalyzePods(pods)
+	for _, status := range healthStatuses {
+		fmt.Printf("Pod: %s, Namespace: %s, Ready: %s, Status: %s, Node: %s\n", status.Name, status.Namespace, status.Ready, status.Status, status.Node)
 	}
 }
