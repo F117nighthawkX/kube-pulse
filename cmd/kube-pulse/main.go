@@ -32,6 +32,12 @@ func main() {
 
 	healthStatuses := health.AnalyzePods(pods)
 	for _, status := range healthStatuses {
-		fmt.Printf("Pod: %s, Namespace: %s, Ready: %s, Status: %s, Node: %s\n", status.Name, status.Namespace, status.Ready, status.Status, status.Node)
+		//fmt.Printf("Pod: %s, Namespace: %s, Ready: %s, Status: %s, Node: %s\n", status.Name, status.Namespace, status.Ready, status.Status, status.Node)
+		fmt.Printf("Pod:        %s\n", status.Name)
+		fmt.Printf("Namespace:  %s\n", status.Namespace)
+		fmt.Printf("Ready:      %s\n", status.Ready)
+		fmt.Printf("Status:     %s\n", status.Status)
+		fmt.Printf("Node:       %s\n", status.Node)
+		fmt.Println("-----------------------------")
 	}
 }
