@@ -28,8 +28,17 @@ Run program from project root:
 go run .\cmd\kube-pulse
 ```
 
-Expected output:
+Expected output for Pods (using `kube-system` as namespace for testing):
 ```
-Connected to Kubernetes server version: v1.36.1
+Listing pods in namespace: kube-system
+Found 8 pods
+Pod: coredns-xxx, Status: Running
+Pod: coredns-xxx, Status: Running
+Pod: etcd-kube-pulse-demo-control-plane, Status: Running
+Pod: kindnet-xxx, Status: Running
+Pod: kube-apiserver-kube-pulse-demo-control-plane, Status: Running
+Pod: kube-controller-manager-kube-pulse-demo-control-plane, Status: Running
+Pod: kube-proxy-xxx, Status: Running
+Pod: kube-scheduler-kube-pulse-demo-control-plane, Status: Running
 ```
-Note: the specific version shouldn't matter
+Note: IDs may differ slightly
