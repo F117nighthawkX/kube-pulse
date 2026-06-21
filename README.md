@@ -32,7 +32,7 @@ kube-pulse-demo
 
 Populate `default` namespace with deployments from `.\deployments\` (run from project root):
 ```powershell
-kubectl apply -f .\examples\
+kubectl apply -f .\deployments\
 ```
 
 Then verify the pods are running with:
@@ -64,13 +64,13 @@ Run program from project root:
 go run .\cmd\kube-pulse
 ```
 
-Expected output for Pods (using `default` as namespace for testing):
+Expected output for Pod health statuses (using `default` as namespace for testing):
 ```
 Listing pods in namespace: default
 Found 3 pods
-Pod: broken-nginx-deployment-844c4bb7f5-j2qgn, Status: Pending
-Pod: healthy-nginx-deployment-796d6c889c-gm7mh, Status: Running
-Pod: healthy-nginx-deployment-796d6c889c-kcmnf, Status: Running
+Pod: broken-nginx-deployment-844c4bb7f5-j2qgn, Namespace: default, Ready: 0/1, Status: Pending, Node: kube-pulse-demo-control-plane
+Pod: healthy-nginx-deployment-796d6c889c-gm7mh, Namespace: default, Ready: 1/1, Status: Running, Node: kube-pulse-demo-control-plane
+Pod: healthy-nginx-deployment-796d6c889c-kcmnf, Namespace: default, Ready: 1/1, Status: Running, Node: kube-pulse-demo-control-plane
 ```
 
 ## Status Checking
