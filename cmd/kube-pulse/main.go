@@ -17,7 +17,7 @@ func main() {
 		fmt.Printf("Error creating Kubernetes client: %v\n", err)
 	}
 
-	pods, err := kube.ListPods(ctx, client, "kube-system")
+	pods, err := kube.ListPods(ctx, client, "default")
 	if err != nil {
 		fmt.Printf("Error listing pods: %v\n", err)
 	} else {
