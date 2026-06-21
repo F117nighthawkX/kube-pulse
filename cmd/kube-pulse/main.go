@@ -37,6 +37,7 @@ func main() {
 		fmt.Printf("Namespace:  %s\n", status.Namespace)
 		fmt.Printf("Ready:      %s\n", status.Ready)
 		fmt.Printf("Status:     %s\n", status.Status)
+		fmt.Printf("Restarts:   %d\n", status.Restarts)
 		fmt.Printf("Node:       %s\n", status.Node)
 		fmt.Println("-----------------------------")
 	}
