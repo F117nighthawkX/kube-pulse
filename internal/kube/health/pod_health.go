@@ -37,6 +37,7 @@ func AnalyzePods(pods []corev1.Pod) []PodHealth {
 		// differences. See https://go101.org/article/function.html
 		health.Issues = append(health.Issues, phaseIssues(pod)...)
 		health.Issues = append(health.Issues, containerIssues(pod)...)
+		health.Issues = append(health.Issues, containerSpecIssues(pod)...)
 
 		healthStatuses = append(healthStatuses, health)
 		//fmt.Printf("Analyzed pod: %s/%s - Status: %s\n", health.Namespace, health.Name, health.Status)
@@ -86,25 +87,71 @@ func containerIssues(pod corev1.Pod) []string {
 		containerName := containerStatus.Name
 
 		if !containerStatus.Ready {
-			msg := fmt.Sprintf("Container %s is not ready", containerName)
+			msg := fmt.Sprintf("Container %q is not ready", containerName)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.RestartCount > 0 {
-			msg := fmt.Sprintf("Container %s has restarted %d times", containerName, containerStatus.RestartCount)
+			msg := fmt.Sprintf("Container %q has restarted %d times", containerName, containerStatus.RestartCount)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.State.Waiting != nil {
-			msg := fmt.Sprintf("Container %s is waiting: %s", containerName, containerStatus.State.Waiting.Reason)
+			msg := fmt.Sprintf("Container %q is waiting: %s", containerName, containerStatus.State.Waiting.Reason)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.State.Terminated != nil {
-			msg := fmt.Sprintf("Container %s is terminated: %s", containerName, containerStatus.State.Terminated.Reason)
+			msg := fmt.Sprintf("Container %q is terminated: %s", containerName, containerStatus.State.Terminated.Reason)
 			issues = append(issues, msg)
 		}
 	}
 
 	return issues
+}
+
+func containerSpecIssues(pod corev1.Pod) []string {
+	var issues []string
+
+	for _, container := range pod.Spec.Containers {
+		containerName := container.Name
+		requests := container.Resources.Requests
+		limits := container.Resources.Limits
+
+		if hasResource(requests, corev1.ResourceCPU) == false {
+			message := fmt.Sprintf("container %q missing CPU request", containerName)
+			issues = append(issues, message)
+		}
+
+		if hasResource(requests, corev1.ResourceMemory) == false {
+			message := fmt.Sprintf("container %q missing memory request", containerName)
+			issues = append(issues, message)
+		}
+
+		if hasResource(limits, corev1.ResourceCPU) == false {
+			message := fmt.Sprintf("container %q missing CPU limit", containerName)
+			issues = append(issues, message)
+		}
+
+		if hasResource(limits, corev1.ResourceMemory) == false {
+			message := fmt.Sprintf("container %q missing memory limit", containerName)
+			issues = append(issues, message)
+		}
+	}
+
+	return issues
+}
+
+func hasResource(resources corev1.ResourceList, resourceName corev1.ResourceName) bool {
+	quantity, resourceExists := resources[resourceName]
+
+	if resourceExists == false {
+		return false
+	}
+
+	if quantity.IsZero() {
+		return false
+	}
+
+	return true
 }
