@@ -39,6 +39,12 @@ func main() {
 		fmt.Printf("Status:     %s\n", status.Status)
 		fmt.Printf("Restarts:   %d\n", status.Restarts)
 		fmt.Printf("Node:       %s\n", status.Node)
+		if len(status.Issues) > 0 {
+			fmt.Printf("Issues:\n")
+			for _, issue := range status.Issues {
+				fmt.Printf("  - %s\n", issue)
+			}
+		}
 		fmt.Println("-----------------------------")
 	}
 }

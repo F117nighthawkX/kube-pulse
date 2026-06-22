@@ -13,6 +13,7 @@ type PodHealth struct {
 	Status    string
 	Restarts  int32
 	Node      string
+	Issues    []string
 }
 
 func AnalyzePods(pods []corev1.Pod) []PodHealth {
@@ -28,7 +29,9 @@ func AnalyzePods(pods []corev1.Pod) []PodHealth {
 			Status:   string(pod.Status.Phase),
 			Restarts: countRestarts(pod),
 			Node:     pod.Spec.NodeName,
+			Issues:   phaseIssues(pod),
 		}
+
 		healthStatuses = append(healthStatuses, health)
 		//fmt.Printf("Analyzed pod: %s/%s - Status: %s\n", health.Namespace, health.Name, health.Status)
 	}
@@ -54,4 +57,19 @@ func countRestarts(pod corev1.Pod) int32 {
 		restarts += containerStatus.RestartCount
 	}
 	return restarts
+}
+
+func phaseIssues(pod corev1.Pod) []string {
+	var issues []string
+	phase := pod.Status.Phase
+
+	if phase == corev1.PodRunning || phase == corev1.PodSucceeded {
+		return issues
+	}
+
+	// Looks like PodUnknown has been deprecated, will never be set
+
+	issues = append(issues, fmt.Sprintf("Pod is in %s phase", phase))
+
+	return issues
 }
