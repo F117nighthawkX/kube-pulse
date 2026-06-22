@@ -53,6 +53,8 @@ missing-resources-deployment-7dc54d449c-wrck4   1/1     Running            0    
 
 ## Run the Project
 
+See [`Release`](https://github.com/F117nighthawkX/kube-pulse#release) for building an executable of this project
+
 If you haven't in a while, make sure node, cluster, and pods exist:
 ```powershell
 kubectl get nodes
@@ -60,7 +62,7 @@ kind get clusters
 kubectl get pods
 ```
 
-If not, repeat `Local Setup`
+If not, repeat [`Local Setup`](https://github.com/F117nighthawkX/kube-pulse#local-setup)
 
 Run program from project root:
 ```powershell
@@ -111,6 +113,19 @@ Issues:
   - container "missing-resources" missing memory limit
 ---------------------------------------------------------
 ```
+
+## Release
+
+Build the project with:
+```powershell
+go build -o kube-pulse.exe .\cmd\kube-pulse
+```
+
+Run the exe with:
+```powershell
+.\kube-pulse.exe
+```
+Note: args work as usual
 
 ## Status Checking
 
