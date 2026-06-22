@@ -67,22 +67,49 @@ Run program from project root:
 go run .\cmd\kube-pulse
 ```
 
+Optional Command Line Args:
+- `namespace`: Kubernetes namespace to use (String)
+- `all-namespaces`: List pods across all namespaces (Boolean)
+- `kubeconfig`: Path to kubeconfig file (String)
+
+Usage example:
+```powershell
+go run .\cmd\kube-pulse --all-namespaces
+```
+
 Expected output for Pod health statuses (using `default` as namespace for testing):
 ```
 Listing pods in namespace: default
 Found 5 pods
-Pod:        broken-command-deployment-f9f6774f-v44b9
+Pod:        broken-command-deployment-f9f6774f-tl6k9
 Namespace:  default
 Ready:      0/1
 Status:     Running
+Restarts:   20
 Node:       kube-pulse-demo-control-plane
------------------------------
+Issues:
+  - Container "broken-command" not ready
+  - Container "broken-command" restarted 20 times
+  - Container "broken-command" waiting: CrashLoopBackOff
+---------------------------------------------------------
 Pod:        healthy-nginx-deployment-5d88895494-fj6hx
 Namespace:  default
 Ready:      1/1
 Status:     Running
 Node:       kube-pulse-demo-control-plane
-...
+---------------------------------------------------------
+Pod:        missing-resources-deployment-7dc54d449c-p4c5l
+Namespace:  default
+Ready:      1/1
+Status:     Running
+Restarts:   0
+Node:       kube-pulse-demo-control-plane
+Issues:
+  - container "missing-resources" missing CPU request
+  - container "missing-resources" missing memory request
+  - container "missing-resources" missing CPU limit
+  - container "missing-resources" missing memory limit
+---------------------------------------------------------
 ```
 
 ## Status Checking
