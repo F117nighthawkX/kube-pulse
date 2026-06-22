@@ -2,15 +2,24 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"log"
 
 	"github.com/F117nighthawkX/kube-pulse/internal/kube"
 	"github.com/F117nighthawkX/kube-pulse/internal/kube/health"
+	corev1 "k8s.io/api/core/v1"
 )
 
 func main() {
-	fmt.Println("\nkube-pulse: Kubernetes Resource Health CLI")
+	namespace := flag.String("namespace", kube.DefaultNamespace, "Kubernetes namespace to use")
+	allNamespaces := flag.Bool("all-namespaces", false, "List pods across all namespaces")
+
+	flag.Parse()
+
+	if *allNamespaces && *namespace != kube.DefaultNamespace {
+		log.Fatalf("Cannot use both --namespace and --all-namespaces together")
+	}
 
 	ctx := context.Background()
 
@@ -19,11 +28,14 @@ func main() {
 		log.Fatalf("Error creating Kubernetes client: %v\n", err)
 	}
 
-	pods, err := kube.ListPods(ctx, client, "default")
+	var pods []corev1.Pod
+	if *allNamespaces {
+		pods, err = kube.ListAllPods(ctx, client)
+	} else {
+		pods, err = kube.ListPods(ctx, client, *namespace)
+	}
 	if err != nil {
 		log.Fatalf("Error listing pods: %v\n", err)
-	} else {
-		fmt.Printf("Found %d pods\n", len(pods))
 	}
 
 	// for _, pod := range pods {
@@ -31,6 +43,11 @@ func main() {
 	// }
 
 	healthStatuses := health.AnalyzePods(pods)
+	if len(healthStatuses) == 0 {
+		fmt.Println("Woops, no pods")
+		return
+	}
+
 	for _, status := range healthStatuses {
 		//fmt.Printf("Pod: %s, Namespace: %s, Ready: %s, Status: %s, Node: %s\n", status.Name, status.Namespace, status.Ready, status.Status, status.Node)
 		fmt.Printf("Pod:        %s\n", status.Name)

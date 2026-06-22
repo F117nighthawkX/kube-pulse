@@ -87,22 +87,22 @@ func containerIssues(pod corev1.Pod) []string {
 		containerName := containerStatus.Name
 
 		if !containerStatus.Ready {
-			msg := fmt.Sprintf("Container %q is not ready", containerName)
+			msg := fmt.Sprintf("Container %q not ready", containerName)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.RestartCount > 0 {
-			msg := fmt.Sprintf("Container %q has restarted %d times", containerName, containerStatus.RestartCount)
+			msg := fmt.Sprintf("Container %q restarted %d times", containerName, containerStatus.RestartCount)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.State.Waiting != nil {
-			msg := fmt.Sprintf("Container %q is waiting: %s", containerName, containerStatus.State.Waiting.Reason)
+			msg := fmt.Sprintf("Container %q waiting: %s", containerName, containerStatus.State.Waiting.Reason)
 			issues = append(issues, msg)
 		}
 
 		if containerStatus.State.Terminated != nil {
-			msg := fmt.Sprintf("Container %q is terminated: %s", containerName, containerStatus.State.Terminated.Reason)
+			msg := fmt.Sprintf("Container %q terminated: %s", containerName, containerStatus.State.Terminated.Reason)
 			issues = append(issues, msg)
 		}
 	}

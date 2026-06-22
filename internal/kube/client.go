@@ -10,7 +10,7 @@ import (
 )
 
 func CreateNewClient() (kubernetes.Interface, error) {
-	fmt.Println("Creating new Kubernetes client")
+	//fmt.Println("Creating new Kubernetes client")
 
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -18,7 +18,7 @@ func CreateNewClient() (kubernetes.Interface, error) {
 	}
 
 	kubeconfigPath := filepath.Join(homeDir, ".kube", "config")
-	fmt.Printf("Kubernetes config path: %s\n", kubeconfigPath)
+	//fmt.Printf("Kubernetes config path: %s\n", kubeconfigPath)
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)
 	if err != nil {
@@ -30,6 +30,6 @@ func CreateNewClient() (kubernetes.Interface, error) {
 		return nil, fmt.Errorf("error creating Kubernetes client: %v", err)
 	}
 
-	fmt.Printf("Kubernetes client created successfully: %T\n", client)
+	//fmt.Printf("Kubernetes client created successfully: %T\n", client)
 	return client, nil
 }
