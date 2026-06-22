@@ -9,15 +9,16 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 )
 
-func CreateNewClient() (kubernetes.Interface, error) {
+func CreateNewClient(kubeconfigPath string) (kubernetes.Interface, error) {
 	//fmt.Println("Creating new Kubernetes client")
 
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, fmt.Errorf("error getting user's home directory: %v", err)
+	if kubeconfigPath == "" {
+		homeDir, err := os.UserHomeDir()
+		if err != nil {
+			return nil, fmt.Errorf("error getting user's home directory: %v", err)
+		}
+		kubeconfigPath = filepath.Join(homeDir, ".kube", "config")
 	}
-
-	kubeconfigPath := filepath.Join(homeDir, ".kube", "config")
 	//fmt.Printf("Kubernetes config path: %s\n", kubeconfigPath)
 
 	config, err := clientcmd.BuildConfigFromFlags("", kubeconfigPath)

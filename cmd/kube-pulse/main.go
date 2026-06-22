@@ -14,6 +14,7 @@ import (
 func main() {
 	namespace := flag.String("namespace", kube.DefaultNamespace, "Kubernetes namespace to use")
 	allNamespaces := flag.Bool("all-namespaces", false, "List pods across all namespaces")
+	kubeconfig := flag.String("kubeconfig", "", "Path to kubeconfig file")
 
 	flag.Parse()
 
@@ -23,7 +24,7 @@ func main() {
 
 	ctx := context.Background()
 
-	client, err := kube.CreateNewClient()
+	client, err := kube.CreateNewClient(*kubeconfig)
 	if err != nil {
 		log.Fatalf("Error creating Kubernetes client: %v\n", err)
 	}
