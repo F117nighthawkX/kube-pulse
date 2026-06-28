@@ -1,5 +1,6 @@
 # Default deployment from https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#creating-a-deployment
 # Adding resource limits and requests: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/#example-1
+# Liveness and readiness probes: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes/
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -28,3 +29,15 @@ spec:
           requests:
             cpu: "50m"
             memory: "64Mi"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 20

@@ -36,7 +36,7 @@ func AnalyzePods(pods []corev1.Pod) []PodHealth {
 		// to JavaScript's spread operator. Go calls it a variadic function, and it has some notable
 		// differences. See https://go101.org/article/function.html
 		health.Issues = append(health.Issues, phaseIssues(pod)...)
-		health.Issues = append(health.Issues, containerIssues(pod)...)
+		health.Issues = append(health.Issues, containerStatusIssues(pod)...)
 		health.Issues = append(health.Issues, containerSpecIssues(pod)...)
 
 		healthStatuses = append(healthStatuses, health)
@@ -81,7 +81,7 @@ func phaseIssues(pod corev1.Pod) []string {
 	return issues
 }
 
-func containerIssues(pod corev1.Pod) []string {
+func containerStatusIssues(pod corev1.Pod) []string {
 	var issues []string
 	for _, containerStatus := range pod.Status.ContainerStatuses {
 		containerName := containerStatus.Name
@@ -135,6 +135,16 @@ func containerSpecIssues(pod corev1.Pod) []string {
 
 		if hasResource(limits, corev1.ResourceMemory) == false {
 			message := fmt.Sprintf("container %q missing memory limit", containerName)
+			issues = append(issues, message)
+		}
+
+		if container.ReadinessProbe == nil {
+			message := fmt.Sprintf("container %q missing readiness probe", containerName)
+			issues = append(issues, message)
+		}
+
+		if container.LivenessProbe == nil {
+			message := fmt.Sprintf("container %q missing liveness probe", containerName)
 			issues = append(issues, message)
 		}
 	}
